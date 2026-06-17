@@ -7,7 +7,6 @@ export default function ThemeSwitcher() {
     const [isChecked, setIsChecked] = useState<boolean>(true)
 
     const {setTheme} = useTheme();
-    setTheme(isChecked ? "dark" : "light");
 
     return (
         <div>
@@ -16,7 +15,11 @@ export default function ThemeSwitcher() {
                 variant="outline"
                 size="icon"
                 title="Toggle theme"
-                onClick={() => setIsChecked(!isChecked)}
+                onClick={() => {
+                    setIsChecked(!isChecked)
+
+                    setTheme(isChecked ? "dark" : "light");
+                }}
             >
                 <Sun className="bg-transparent h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
                 <Moon className="bg-transparent absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
