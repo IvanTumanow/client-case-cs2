@@ -1,47 +1,44 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import {BrowserRouter, Navigate, Route, Routes} from "react-router";
+import {BrowserRouter, Route, Routes} from "react-router";
+
+import {ROUTES_CONFIG} from "@/config/routes.config.ts";
+
+import MainLayout from "@/app/mainLayout/layout.tsx";
+import CleanLayout from "@/app/cleanLayout/layout.tsx";
+
+import {ThemeProvider} from "@/components/app/providers/ThemeProvider.tsx";
 
 import './index.css'
-import MainLayout from "./mainLayout/layout.tsx";
-import {ROUTES_CONFIG} from "../config/routes.config.ts";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <ThemeProvider>
+        <BrowserRouter>
 
-        <Routes>
-            <Route path={'/'} element={<MainLayout/>}>
-                <Route
-                    index
-                    element={ROUTES_CONFIG.ROUTES.HOME.element()}
-                />
-
-                <Route
-                    path={ROUTES_CONFIG.ROUTES.SECOND.url}
-                    element={ROUTES_CONFIG.ROUTES.SECOND.element()}
-                />
-            </Route>
-
-            <Route path={ROUTES_CONFIG.ROUTES.AUTH.url}>
-                <Route
-                    index
-                    element={<Navigate to={'/'} replace />}
-                />
+            <Routes>
+                <Route path={'/'} element={<MainLayout/>}>
+                    <Route
+                        index
+                        element={ROUTES_CONFIG.ROUTES.HOME.element()}
+                    />
+                </Route>
 
                 <Route
-                    path={ROUTES_CONFIG.ROUTES.SIGN_IN.url.replaceAll('/', '')}
-                    element={ROUTES_CONFIG.ROUTES.SIGN_IN.element()}
-                />
+                    path={ROUTES_CONFIG.ROUTES.AUTH.url}
+                    element={<CleanLayout/>}
+                >
+                    <Route
+                        index
+                        element={ROUTES_CONFIG.ROUTES.AUTH.element()}
+                    />
+                </Route>
 
-                <Route
-                    path={ROUTES_CONFIG.ROUTES.SIGN_UP.url.replaceAll('/', '')}
-                    element={ROUTES_CONFIG.ROUTES.SIGN_UP.element()}
-                />
-            </Route>
-        </Routes>
 
-    </BrowserRouter>
+            </Routes>
+
+        </BrowserRouter>
+    </ThemeProvider>
   </StrictMode>,
 )

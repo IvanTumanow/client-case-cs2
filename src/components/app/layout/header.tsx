@@ -1,9 +1,10 @@
-import {ROUTES_CONFIG} from "../../config/routes.config.ts";
+import {ROUTES_CONFIG} from "@/config/routes.config.ts";
 import {Link} from "react-router";
+import ThemeSwitcher from "@/components/app/ui/ThemeSwitcher.tsx";
 
 export default function Header() {
     return (
-        <div>
+        <header>
             <nav>
                 <ul>
                     {
@@ -19,8 +20,12 @@ export default function Header() {
                             </li>
                         ))
                     }
+
+                    <li>
+                        <ThemeSwitcher/>
+                    </li>
                 </ul>
             </nav>
-        </div>
+        </header>
     )
 }
