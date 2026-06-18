@@ -1,7 +1,13 @@
+import {AuthForm} from "@/components/app/form/auth-form.tsx";
+
 export default function Auth() {
     return (
-        <div>
-            <h1>Welcome to sign in</h1>
-        </div>
+        <>
+            <div className="flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
+                <div className="w-full max-w-sm md:max-w-4xl">
+                    <AuthForm></AuthForm>
+                </div>
+            </div>
+        </>
     )
 }
