@@ -15,14 +15,6 @@ out/
 .next/
 .nuxt/
 
-# Файлы среды окружения
-.env
-.env.local
-.env.*.local
-.env.development.local
-.env.test.local
-.env.production.local
-
 # Логи
 logs/
 *.log

@@ -9,6 +9,7 @@ import MainLayout from "@/app/mainLayout/layout.tsx";
 import CleanLayout from "@/app/cleanLayout/layout.tsx";
 
 import {ThemeProvider} from "@/components/app/providers/ThemeProvider.tsx";
+import { Toaster } from "@/components/ui/sonner"
 
 import './index.css'
 
@@ -39,6 +40,27 @@ createRoot(document.getElementById('root')!).render(
             </Routes>
 
         </BrowserRouter>
+
+        <Toaster
+            position={'bottom-left'}
+            swipeDirections={['right', 'left']}
+            visibleToasts={5}
+            duration={3000}
+            toastOptions={{
+                classNames: {
+                    success: '[--toast-color:var(--color-success)]',
+                    warning: '[--toast-color:var(--color-warning)]',
+                    error: '[--toast-color:var(--color-destructive)]',
+
+                    toast: '!border-[var(--toast-color)]',
+                    icon: '!text-[var(--toast-color)]',
+                    title: '!text-[var(--toast-color)]',
+
+                    description: '!text-[var(--color-foreground)]/70'
+                }
+            }}
+        />
+
     </ThemeProvider>
   </StrictMode>,
 )

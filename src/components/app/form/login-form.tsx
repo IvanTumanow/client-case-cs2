@@ -11,27 +11,30 @@ import {Input} from "@/components/ui/input"
 
 import type {ComponentProps} from 'react'
 import {useForm} from "react-hook-form";
-import {type ILogin, loginSchema} from "@/shared/zod-schemas/auth.schemas.ts";
+import {type IAuth, type ILogin, loginSchema} from "@/shared/zod-schemas/auth.schemas.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {LoaderCircle} from "lucide-react";
 
 interface Props extends ComponentProps<"div"> {
     onSignup?: () => void
+    setData: (data: IAuth) => void
+    isLoading: boolean
 }
 
-export function LoginForm({className, onSignup, ...props}: Props) {
+export function LoginForm({className, onSignup, setData, isLoading, ...props}: Props) {
     const {register, handleSubmit, formState} = useForm<ILogin>({
         resolver: zodResolver(loginSchema)
     })
 
-    const onSubmit = (data: ILogin) => {
-        console.log('Вход', data)
+    const onHandleSubmit = (data: ILogin) => {
+        setData({data, type: "login"})
     };
 
     return (
         <div className={cn("gap-6 w-sm", className)} {...props}>
             <Card className="overflow-hidden p-0 shadow-[none]">
                 <CardContent className="p-0 flex flex-col">
-                    <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
+                    <form className="p-6 md:p-8" onSubmit={handleSubmit(onHandleSubmit)}>
                         <FieldGroup>
                             <div className="flex flex-col items-center gap-2 text-center">
                                 <h1 className="text-2xl font-bold">С возвращением</h1>
@@ -76,7 +79,7 @@ export function LoginForm({className, onSignup, ...props}: Props) {
                                 }
                             </Field>
                             <Field>
-                                <Button type="submit">Войти</Button>
+                                <Button type="submit">{isLoading ? <LoaderCircle className={'animate-spin'}/> : 'Войти'}</Button>
                             </Field>
                             <Field className="grid grid-cols-3 gap-4">
                             </Field>

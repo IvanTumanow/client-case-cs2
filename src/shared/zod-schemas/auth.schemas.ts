@@ -1,7 +1,7 @@
 import {z} from "zod";
 
-const emailField = z.email({ error: 'Введите корректный email' });
-const passwordField = z.string().min(8, { error: 'Пароль должен содержать минимум 8 символов' });
+const emailField = z.email({error: 'Введите корректный email'});
+const passwordField = z.string().min(8, {error: 'Пароль должен содержать минимум 8 символов'});
 
 const loginSchema = z.object({
     email: emailField,
@@ -20,4 +20,16 @@ const signupSchema = z.object({
 type ILogin = z.infer<typeof loginSchema>;
 type ISignup = z.infer<typeof signupSchema>;
 
-export {type ILogin, type ISignup, loginSchema, signupSchema};
+type IAuth =
+    {
+        type: 'signup';
+        data: ISignup;
+    }
+    |
+    {
+        type: 'login';
+        data: ILogin;
+    }
+
+export type {ILogin, ISignup, IAuth};
+export {loginSchema, signupSchema}

@@ -9,28 +9,31 @@ import {
 } from "@/components/ui/field"
 import {Input} from "@/components/ui/input"
 import type {ComponentProps} from "react";
-import {type ISignup, signupSchema} from "@/shared/zod-schemas/auth.schemas.ts";
+import {type IAuth, type ISignup, signupSchema} from "@/shared/zod-schemas/auth.schemas.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {LoaderCircle} from "lucide-react";
 
 interface Props extends ComponentProps<"div"> {
     onLogin?: () => void
+    setData: (data: IAuth) => void
+    isLoading: boolean
 }
 
-export function SignupForm({className, onLogin, ...props}: Props) {
+export function SignupForm({className, onLogin, setData, isLoading, ...props}: Props) {
     const {register, handleSubmit, formState} = useForm<ISignup>({
         resolver: zodResolver(signupSchema)
     })
 
-    const onSubmit = (data: ISignup) => {
-        console.log('Регистрация', data)
+    const onHandleSubmit = (data: ISignup) => {
+        setData({data, type: "signup"})
     };
 
     return (
         <div className={cn("gap-6 w-sm", className)} {...props}>
             <Card className="overflow-hidden p-0 shadow-[none]">
                 <CardContent className="p-0 flex flex-col">
-                    <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
+                    <form className="p-6 md:p-8" onSubmit={handleSubmit(onHandleSubmit)}>
                         <FieldGroup>
                             <div className="flex flex-col items-center gap-2 text-center">
                                 <h1 className="text-2xl font-bold">Добро пожаловать</h1>
@@ -89,7 +92,7 @@ export function SignupForm({className, onLogin, ...props}: Props) {
                                 }
                             </Field>
                             <Field>
-                                <Button type="submit">Зарегистрироваться</Button>
+                                <Button type="submit">{isLoading ? <LoaderCircle className={'animate-spin'}/> : 'Зарегистрироваться'}</Button>
                             </Field>
                             <Field className="grid grid-cols-3 gap-4">
                             </Field>
