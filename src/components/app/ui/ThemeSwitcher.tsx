@@ -11,8 +11,8 @@ export default function ThemeSwitcher() {
     return (
         <div>
             <Button
-                className={'border-0 hover:scale-125 bg-transparent'}
-                variant="outline"
+                className={'border-0 p-0 hover:scale-125 bg-transparent'}
+                variant="ghost"
                 size="icon"
                 title="Toggle theme"
                 onClick={() => {

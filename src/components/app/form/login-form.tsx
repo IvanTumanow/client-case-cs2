@@ -10,33 +10,51 @@ import {
 import {Input} from "@/components/ui/input"
 
 import type {ComponentProps} from 'react'
+import {useForm} from "react-hook-form";
+import {type ILogin, loginSchema} from "@/shared/zod-schemas/auth.schemas.ts";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 interface Props extends ComponentProps<"div"> {
     onSignup?: () => void
 }
 
 export function LoginForm({className, onSignup, ...props}: Props) {
+    const {register, handleSubmit, formState} = useForm<ILogin>({
+        resolver: zodResolver(loginSchema)
+    })
+
+    const onSubmit = (data: ILogin) => {
+        console.log('Вход', data)
+    };
+
     return (
         <div className={cn("gap-6 w-sm", className)} {...props}>
             <Card className="overflow-hidden p-0 shadow-[none]">
                 <CardContent className="p-0 flex flex-col">
-                    <form className="p-6 md:p-8">
+                    <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
                         <FieldGroup>
                             <div className="flex flex-col items-center gap-2 text-center">
-                                <h1 className="text-2xl font-bold">Welcome back</h1>
+                                <h1 className="text-2xl font-bold">С возвращением</h1>
                             </div>
                             <Field>
                                 <FieldLabel htmlFor="email">Email</FieldLabel>
                                 <Input
+                                    {...register('email')}
                                     id="email"
                                     type="email"
                                     placeholder="m@example.com"
-                                    required
+                                    className={cn(formState?.errors?.email ? 'border-(--color-destructive)' : '')}
                                 />
+                                {
+                                    formState?.errors?.email &&
+                                    <FieldDescription className={'text-(--color-destructive) text-xs'}>
+                                        {formState.errors.email.message}
+                                    </FieldDescription>
+                                }
                             </Field>
                             <Field>
                                 <div className="flex items-center">
-                                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                                    <FieldLabel htmlFor="password">Пароль</FieldLabel>
                                     {/*<a*/}
                                     {/*    href="#"*/}
                                     {/*    className="ml-auto text-sm underline-offset-2 hover:underline"*/}
@@ -44,16 +62,36 @@ export function LoginForm({className, onSignup, ...props}: Props) {
                                     {/*    Forgot your password?*/}
                                     {/*</a>*/}
                                 </div>
-                                <Input id="password" type="password" required/>
+                                <Input
+                                    {...register('password')}
+                                    id="password"
+                                    type="password"
+                                    className={cn(formState?.errors?.email ? 'border-(--color-destructive)' : '')}
+                                />
+                                {
+                                    formState?.errors?.password &&
+                                    <FieldDescription className={'text-(--color-destructive) text-xs'}>
+                                        {formState.errors.password.message}
+                                    </FieldDescription>
+                                }
                             </Field>
                             <Field>
-                                <Button type="submit">Login</Button>
+                                <Button type="submit">Войти</Button>
                             </Field>
                             <Field className="grid grid-cols-3 gap-4">
                             </Field>
                             <FieldDescription className="text-center">
-                                Don&apos;t have an account?
-                                <Button type={'button'} variant={'ghost'} className={'px-1 hover:bg-transparent'} onClick={() => {onSignup?.()}}>Sign up</Button>
+                                Еще нет аккаунта?
+                                <Button
+                                    type={'button'}
+                                    variant={'ghost'}
+                                    className={'px-1 hover:bg-transparent'}
+                                    onClick={() => {
+                                        onSignup?.()
+                                    }}
+                                >
+                                    Зарегистрироваться
+                                </Button>
                             </FieldDescription>
                         </FieldGroup>
                     </form>

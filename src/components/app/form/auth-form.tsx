@@ -6,10 +6,10 @@ import {Card, CardContent} from "../../ui/card.tsx";
 import {type ComponentProps, type CSSProperties, useState} from "react";
 import type {ClassValue} from "clsx";
 
-export function AuthForm({className, ...props}: ComponentProps<"div">) {
+export default function AuthForm({className, ...props}: ComponentProps<"div">) {
     const [isLogin, setIsLogin] = useState(true);
 
-    const durationMs: number = 700
+    const durationMs: number = 1000
 
     const durationStyle = {
         '--duration': `${durationMs}ms`,
@@ -44,9 +44,9 @@ export function AuthForm({className, ...props}: ComponentProps<"div">) {
     }
 
     return (
-        <div style={durationStyle} className={cn("flex flex-col gap-6 justify-center h-[550px] w-fit", className)} {...props}>
+        <div style={durationStyle} className={cn("flex flex-col gap-6 justify-center w-full sm:w-fit", className)} {...props}>
             <Card className={'p-0'}>
-                <CardContent className="flex flex-row items-center relative h-full">
+                <CardContent className="flex flex-row items-center relative h-120">
                     <LoginForm onSignup={handleSignUp} className={cn(loginClassname.transition, loginClassname.opacity, loginClassname.translate)}></LoginForm>
                     <SignupForm onLogin={handleLogin} className={cn(signupClassname.transition, signupClassname.opacity, signupClassname.translate)}></SignupForm>
 
@@ -54,15 +54,15 @@ export function AuthForm({className, ...props}: ComponentProps<"div">) {
                         src="https://i.pinimg.com/originals/a8/1c/37/a81c37182ab0545687f6ae233d4a262d.png"
                         alt="Image"
                         className={
-                        cn("absolute top-0 inset-0 h-full w-1/2 rounded-xl object-cover shadow-lg",
+                        cn("absolute top-0 inset-0 h-full w-1/2 rounded-xl object-cover shadow-lg hidden sm:block",
                             imageClassname.position, imageClassname.transition)}
                     />
                 </CardContent>
             </Card>
 
-            <FieldDescription className="px-6 text-center">
-                By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-                and <a href="#">Privacy Policy</a>.
+            <FieldDescription className="px-6 text-center text-xs">
+                Нажав кнопку продолжить, вы соглашаетесь с нашими условиями<br/><a href="#">пользовательского соглашения</a>{" "}
+                и <a href="#">политики конфиденциальности</a>
             </FieldDescription>
         </div>
     )

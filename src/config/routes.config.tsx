@@ -8,13 +8,13 @@ class routesConfig {
         HOME: {
             title: 'Главная',
             url: '/',
-            element: Home
+            element: <Home/>
         },
 
         AUTH: {
             title: 'Авторизация и регистрация',
             url: '/auth',
-            element: Auth
+            element: <Auth/>
         },
     } as const
 

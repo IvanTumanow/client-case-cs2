@@ -1,13 +1,22 @@
-import {AuthForm} from "@/components/app/form/auth-form.tsx";
+import AuthForm from "@/components/app/form/auth-form.tsx";
+import {useEffect} from "react";
 
 export default function Auth() {
+    useEffect(() => {
+        const classnameNoScroll: string = 'no-y-scroll'
+
+        document.body.classList.add(classnameNoScroll);
+
+        return () => {
+            document.body.classList.remove(classnameNoScroll);
+        };
+    }, []);
+
     return (
-        <>
-            <div className="flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
-                <div className="w-full max-w-sm md:max-w-4xl">
-                    <AuthForm></AuthForm>
-                </div>
+        <div className="w-full flex items-center justify-center min-h-svh">
+            <div className="w-fit">
+                <AuthForm />
             </div>
-        </>
+        </div>
     )
 }

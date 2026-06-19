@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 
 import {BrowserRouter, Route, Routes} from "react-router";
 
-import {ROUTES_CONFIG} from "@/config/routes.config.ts";
+import {ROUTES_CONFIG} from "@/config/routes.config.tsx";
 
 import MainLayout from "@/app/mainLayout/layout.tsx";
 import CleanLayout from "@/app/cleanLayout/layout.tsx";
@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')!).render(
                 <Route path={'/'} element={<MainLayout/>}>
                     <Route
                         index
-                        element={ROUTES_CONFIG.ROUTES.HOME.element()}
+                        element={ROUTES_CONFIG.ROUTES.HOME.element}
                     />
                 </Route>
 
@@ -31,7 +31,7 @@ createRoot(document.getElementById('root')!).render(
                 >
                     <Route
                         index
-                        element={ROUTES_CONFIG.ROUTES.AUTH.element()}
+                        element={ROUTES_CONFIG.ROUTES.AUTH.element}
                     />
                 </Route>
 

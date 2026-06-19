@@ -1,72 +1,108 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import {cn} from "@/lib/utils"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent} from "@/components/ui/card"
 import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
+    Field,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel,
 } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import {Input} from "@/components/ui/input"
 import type {ComponentProps} from "react";
+import {type ISignup, signupSchema} from "@/shared/zod-schemas/auth.schemas.ts";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 interface Props extends ComponentProps<"div"> {
-  onLogin?: () => void
+    onLogin?: () => void
 }
 
 export function SignupForm({className, onLogin, ...props}: Props) {
-  return (
-      <div className={cn("gap-6 w-sm", className)} {...props}>
-        <Card className="overflow-hidden p-0 shadow-[none]">
-          <CardContent className="p-0 flex flex-col">
-            <form className="p-6 md:p-8">
-              <FieldGroup>
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <h1 className="text-2xl font-bold">Create your account</h1>
+    const {register, handleSubmit, formState} = useForm<ISignup>({
+        resolver: zodResolver(signupSchema)
+    })
 
-                </div>
-                <Field>
-                  <FieldLabel htmlFor="email">Email</FieldLabel>
-                  <Input
-                      id="email"
-                      type="email"
-                      placeholder="m@example.com"
-                      required
-                  />
-                  <FieldDescription>
-                    We&apos;ll use this to contact you. We will not share your
-                    email with anyone else.
-                  </FieldDescription>
-                </Field>
-                <Field>
-                  <Field className="grid grid-cols-2 gap-4">
-                    <Field>
-                      <FieldLabel htmlFor="password">Password</FieldLabel>
-                      <Input id="password" type="password" required />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="confirm-password">
-                        Confirm Password
-                      </FieldLabel>
-                      <Input id="confirm-password" type="password" required />
-                    </Field>
-                  </Field>
-                  <FieldDescription>
-                    Must be at least 8 characters long.
-                  </FieldDescription>
-                </Field>
-                <Field>
-                  <Button type="submit">Create Account</Button>
-                </Field>
-                <Field className="grid grid-cols-3 gap-4">
-                </Field>
-                <FieldDescription className="text-center">
-                  Already have an account? <Button type={'button'} variant={'ghost'} className={'px-1 hover:bg-transparent'} onClick={() => {onLogin?.()}}>Sign in</Button>
-                </FieldDescription>
-              </FieldGroup>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-  )
+    const onSubmit = (data: ISignup) => {
+        console.log('Регистрация', data)
+    };
+
+    return (
+        <div className={cn("gap-6 w-sm", className)} {...props}>
+            <Card className="overflow-hidden p-0 shadow-[none]">
+                <CardContent className="p-0 flex flex-col">
+                    <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
+                        <FieldGroup>
+                            <div className="flex flex-col items-center gap-2 text-center">
+                                <h1 className="text-2xl font-bold">Добро пожаловать</h1>
+
+                            </div>
+                            <Field>
+                                <FieldLabel htmlFor="email">Email</FieldLabel>
+                                <Input
+                                    {...register('email')}
+                                    id="email"
+                                    type="email"
+                                    placeholder="m@example.com"
+                                    className={cn(formState?.errors?.email ? 'border-(--color-destructive)' : '')}
+                                />
+                                {
+                                    formState?.errors?.email &&
+                                    <FieldDescription className={'text-(--color-destructive) text-xs'}>
+                                        {formState.errors.email.message}
+                                    </FieldDescription>
+                                }
+                            </Field>
+                            <Field className={'gap-4'}>
+                                <Field className="grid grid-cols-2 gap-4">
+                                    <Field>
+                                        <FieldLabel htmlFor="password">Пароль</FieldLabel>
+                                        <Input
+                                            {...register('password')}
+                                            id="password"
+                                            type="password"
+                                            className={cn(formState?.errors?.password ? 'border-(--color-destructive)' : '')}
+                                        />
+                                    </Field>
+                                    <Field>
+                                        <FieldLabel htmlFor="confirm-password">
+                                            Подтвердите пароль
+                                        </FieldLabel>
+                                        <Input
+                                            {...register('confirmPassword')}
+                                            id="confirm-password"
+                                            type="password"
+                                            className={cn(formState?.errors?.confirmPassword ? 'border-(--color-destructive)' : '')}
+                                        />
+                                    </Field>
+                                </Field>
+                                {
+                                    (formState?.errors?.password || formState?.errors?.confirmPassword) &&
+                                    <FieldDescription className={'text-(--color-destructive) text-xs flex flex-col gap-0.5'}>
+                                        <span>
+                                            {formState?.errors?.password?.message}
+                                        </span>
+
+                                        <span>
+                                            {formState?.errors?.confirmPassword?.message}
+                                        </span>
+                                    </FieldDescription>
+                                }
+                            </Field>
+                            <Field>
+                                <Button type="submit">Зарегистрироваться</Button>
+                            </Field>
+                            <Field className="grid grid-cols-3 gap-4">
+                            </Field>
+                            <FieldDescription className="text-center">
+                                Уже есть аккаунт? <Button type={'button'} variant={'ghost'}
+                                                          className={'px-1 hover:bg-transparent'} onClick={() => {
+                                onLogin?.()
+                            }}>Войти</Button>
+                            </FieldDescription>
+                        </FieldGroup>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    )
 }

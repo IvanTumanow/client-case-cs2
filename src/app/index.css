@@ -129,3 +129,7 @@
     @apply font-sans;
     }
 }
+
+.no-y-scroll{
+    overflow-y: hidden;
+}

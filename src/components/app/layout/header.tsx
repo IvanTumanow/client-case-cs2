@@ -1,4 +1,4 @@
-import {ROUTES_CONFIG} from "@/config/routes.config.ts";
+import {ROUTES_CONFIG} from "@/config/routes.config.tsx";
 import {Link} from "react-router";
 import ThemeSwitcher from "@/components/app/ui/ThemeSwitcher.tsx";
 
