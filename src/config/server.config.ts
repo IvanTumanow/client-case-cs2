@@ -1,7 +1,9 @@
-import {envSchema} from "@/shared/zod-schemas/server.schemas.ts";
+import {envSchema, type IEnv} from "@/shared/zod-schemas/server.schemas.ts";
 
 class serverConfig {
-    readonly URL: string = '';
+    readonly SERVER: IEnv = {
+        VITE_SERVER_URL: ''
+    };
 
     constructor() {
         const validation = envSchema.safeParse(import.meta.env)
@@ -13,7 +15,7 @@ class serverConfig {
 
         console.log('Environment validation is success')
 
-        this.URL = validation.data.VITE_SERVER_URL
+        this.SERVER.VITE_SERVER_URL = validation.data.VITE_SERVER_URL
     }
 }
 

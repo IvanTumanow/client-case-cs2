@@ -26,7 +26,7 @@ export function SignupForm({className, onLogin, setData, isLoading, ...props}: P
     })
 
     const onHandleSubmit = (data: ISignup) => {
-        setData({data, type: "signup"})
+        setData({data, type: "register"})
     };
 
     return (
@@ -92,7 +92,7 @@ export function SignupForm({className, onLogin, setData, isLoading, ...props}: P
                                 }
                             </Field>
                             <Field>
-                                <Button type="submit">{isLoading ? <LoaderCircle className={'animate-spin'}/> : 'Зарегистрироваться'}</Button>
+                                <Button type="submit" disabled={isLoading}>{isLoading ? <LoaderCircle className={'animate-spin'}/> : 'Зарегистрироваться'}</Button>
                             </Field>
                             <Field className="grid grid-cols-3 gap-4">
                             </Field>

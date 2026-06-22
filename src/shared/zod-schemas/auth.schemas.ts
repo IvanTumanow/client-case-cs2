@@ -22,7 +22,7 @@ type ISignup = z.infer<typeof signupSchema>;
 
 type IAuth =
     {
-        type: 'signup';
+        type: 'register';
         data: ISignup;
     }
     |

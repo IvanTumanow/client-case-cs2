@@ -1,12 +1,9 @@
 import {Moon, Sun} from "lucide-react";
 import {useTheme} from "@/components/app/providers/ThemeProvider.tsx";
-import {useState} from "react";
 import {Button} from "@/components/ui/button.tsx";
 
 export default function ThemeSwitcher() {
-    const [isChecked, setIsChecked] = useState<boolean>(true)
-
-    const {setTheme} = useTheme();
+    const {theme, setTheme} = useTheme();
 
     return (
         <div>
@@ -16,9 +13,7 @@ export default function ThemeSwitcher() {
                 size="icon"
                 title="Toggle theme"
                 onClick={() => {
-                    setIsChecked(!isChecked)
-
-                    setTheme(isChecked ? "dark" : "light");
+                    setTheme(theme === 'dark' ? 'light' : 'dark');
                 }}
             >
                 <Sun className="bg-transparent h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />

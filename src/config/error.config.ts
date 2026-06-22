@@ -1,7 +1,7 @@
-import type {IError} from "@/shared/types/error.types.ts";
+import type {INotification} from "@/shared/types/error.types.ts";
 
 class errorConfig {
-    DEFAULT: IError = {
+    DEFAULT: INotification = {
         title: 'Ошибка',
         message: 'Возникла непредвиденная ошибка',
     }

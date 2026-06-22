@@ -3,13 +3,14 @@ import {LoginForm} from "@/components/app/form/login-form.tsx";
 import {SignupForm} from "@/components/app/form/signup-form.tsx";
 import {FieldDescription} from "@/components/ui/field.tsx";
 import {Card, CardContent} from "../../ui/card.tsx";
-import {type ComponentProps, type CSSProperties, useEffect, useState} from "react";
+import {type ComponentProps, type CSSProperties, useEffect, useRef, useState} from "react";
 import type {ClassValue} from "clsx";
 import type {IAuth} from "@/shared/zod-schemas/auth.schemas.ts";
 import {SERVER_CONFIG} from "@/config/server.config.ts";
 import axios from "axios";
 import {toast} from "sonner";
 import {ERROR_CONFIG} from "@/config/error.config.ts";
+import type {INotification} from "@/shared/types/error.types.ts";
 
 export default function AuthForm({className, ...props}: ComponentProps<"div">) {
     const [isLogin, setIsLogin] = useState(true);
@@ -39,48 +40,86 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
         translate: !isLogin ? 'translate-x-0 delay-300' : '-translate-x-1/4 pointer-events-none',
     } as const;
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const cancelAbortController = () => {
+        if (abortControllerRef.current) abortControllerRef.current.abort();
+    }
 
     const handleSignUp = () => {
         setIsLogin(false);
+        cancelAbortController();
     }
 
     const handleLogin = () => {
         setIsLogin(true)
+        cancelAbortController();
     }
 
-    const [dataForm, setDataForm] = useState<IAuth | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<unknown>(false);
+    useEffect(() => {
+        return () => {
+            cancelAbortController();
+        }
+    }, [])
 
-    const handleSetDataForm = (data: IAuth | null) => {
-        setDataForm(() => {
-            //отправка данных
-            (async function () {
-                try {
-                    setIsLoading(true);
+    const handleSetDataForm = async (data: IAuth | null) => {
+        try {
+            setIsLoading(true);
 
-                    const path = data?.type === 'login' ? 'login' : 'signup';
-                    const res = await axios.post(`${SERVER_CONFIG}/auth/${path}`, data?.data)
+            cancelAbortController();
+            abortControllerRef.current = new AbortController();
 
-                    if (res.status !== 200) throw new Error(res.statusText)
+            if (!data) {
+                console.warn('Нет данных для отправки');
+                return;
+            }
 
-                    // сохраняем данные
+            const path = data.type === 'login' ? 'login' : 'register';
+            const res = await axios.post(
+                `${SERVER_CONFIG.SERVER.VITE_SERVER_URL}/auth/${path}`,
+                data?.data,
+                {
+                    signal: abortControllerRef.current.signal,
                 }
-                catch (err: unknown) {
-                    setError(err);
-                    toast.error(ERROR_CONFIG.DEFAULT.title, {
-                        description: ERROR_CONFIG.DEFAULT.message,
-                    })
+            )
 
-                    console.error(err);
-                }
-                finally {
-                    setIsLoading(false);
-                }
-            })()
+            if (res.status >= 400) throw new Error(res.data)
 
-            return data
-        });
+            const message: Record<IAuth['type'], INotification> = {
+                register: {
+                    message: 'Регистрация была успешна. Авторизуйтесь для входа в систему',
+                    title: 'Регистрация успешна'
+                },
+                login: {
+                    message: 'Вход был успешно выполнен',
+                    title: 'Вход выполнен'
+                }
+            }
+
+            if (data.type === 'register') setIsLogin(true);
+
+            toast.success(message[data.type].title, {
+                description: message[data.type].message,
+            })
+        }
+        catch (err: unknown) {
+            if (axios.isCancel(err)) return
+
+            if (axios.isAxiosError(err) && err?.response?.data?.error?.details) {
+                toast.error(ERROR_CONFIG.DEFAULT.title, {
+                    description: err.response.data.error.details,
+                })
+            } else {
+                toast.error(ERROR_CONFIG.DEFAULT.title, {
+                    description: ERROR_CONFIG.DEFAULT.message,
+                })
+            }
+        }
+        finally {
+            abortControllerRef.current = null;
+            setIsLoading(false);
+        }
     }
 
     return (

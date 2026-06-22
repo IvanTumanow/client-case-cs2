@@ -1,4 +1,4 @@
-export type IError = {
+export type INotification = {
     title: string
     message: string
 }

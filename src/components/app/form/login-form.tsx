@@ -79,7 +79,7 @@ export function LoginForm({className, onSignup, setData, isLoading, ...props}: P
                                 }
                             </Field>
                             <Field>
-                                <Button type="submit">{isLoading ? <LoaderCircle className={'animate-spin'}/> : 'Войти'}</Button>
+                                <Button type="submit" disabled={isLoading}>{isLoading ? <LoaderCircle className={'animate-spin'}/> : 'Войти'}</Button>
                             </Field>
                             <Field className="grid grid-cols-3 gap-4">
                             </Field>
