@@ -5,22 +5,18 @@ import {FieldDescription} from "@/components/ui/field.tsx";
 import {Card, CardContent} from "../../ui/card.tsx";
 import {type ComponentProps, type CSSProperties, useEffect, useRef, useState} from "react";
 import type {ClassValue} from "clsx";
-import type {IAuth} from "@/shared/zod-schemas/auth.schemas.ts";
-import {SERVER_CONFIG} from "@/config/server.config.ts";
+import type {IAuth, ILogin, ISignup} from "@/shared/zod-schemas/auth.schemas.ts";
 import axios from "axios";
 import {toast} from "sonner";
-import {ERROR_CONFIG} from "@/config/error.config.ts";
-import type {INotification} from "@/shared/types/error.types.ts";
+import {NOTIFICATION_CONFIG} from "@/config/error.config.ts";
 import {ROUTES_CONFIG} from "@/config/routes.config.tsx";
 import {useNavigate} from "react-router";
+import useAuth from "@/hooks/useAuth.hooks.tsx";
 
 export default function AuthForm({className, ...props}: ComponentProps<"div">) {
     const navigate = useNavigate();
 
     const [isLogin, setIsLogin] = useState(true);
-
-    const [loginIsSuccess, setLoginIsSuccess] = useState<boolean>(false);
-    const [registerIsSuccess, setRegisterIsSuccess] = useState<boolean>(false);
 
     const durationMs: number = 1000
 
@@ -70,6 +66,8 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
         }
     }, [])
 
+    const {login, register} = useAuth({abortControllerRef: abortControllerRef})
+
     const handleSetDataForm = async (data: IAuth | null) => {
         try {
             setIsLoading(true);
@@ -83,51 +81,26 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
             }
 
             const path = data.type === 'login' ? 'login' : 'register';
-            const res = await axios.post(
-                `${SERVER_CONFIG.SERVER.VITE_SERVER_URL}/auth/${path}`,
-                data?.data,
-                {
-                    signal: abortControllerRef.current.signal,
-                }
-            )
 
-            if (res.status >= 400) throw new Error(res.data)
+            if (path === 'login') await login(data.data as ILogin)
+            else await register(data.data as ISignup)
 
-            const message: Record<IAuth['type'], INotification> = {
-                register: {
-                    message: 'Регистрация была успешна. Авторизуйтесь для входа в систему',
-                    title: 'Регистрация успешна'
-                },
-                login: {
-                    message: 'Вход был успешно выполнен',
-                    title: 'Вход выполнен'
-                }
-            }
-
-            toast.success(message[data.type].title, {
-                description: message[data.type].message,
+            toast.success(NOTIFICATION_CONFIG.SUCCESS.LOGIN.title, {
+                description: NOTIFICATION_CONFIG.SUCCESS.LOGIN.message,
             })
 
-            if (data.type === 'register') {
-                setIsLogin(true)
-                setRegisterIsSuccess(true);
-                setTimeout(() => setRegisterIsSuccess(false), 1000);
-            }
-            else {
-                setLoginIsSuccess(true)
-                navigate(ROUTES_CONFIG.ROUTES.HOME.url);
-            }
+            navigate(ROUTES_CONFIG.ROUTES.HOME.url);
         }
         catch (err: unknown) {
             if (axios.isCancel(err)) return
 
             if (axios.isAxiosError(err) && err?.response?.data?.error?.details) {
-                toast.error(ERROR_CONFIG.DEFAULT.title, {
+                toast.error(NOTIFICATION_CONFIG.ERROR.DEFAULT.title, {
                     description: err.response.data.error.details,
                 })
             } else {
-                toast.error(ERROR_CONFIG.DEFAULT.title, {
-                    description: ERROR_CONFIG.DEFAULT.message,
+                toast.error(NOTIFICATION_CONFIG.ERROR.DEFAULT.title, {
+                    description: NOTIFICATION_CONFIG.ERROR.DEFAULT.message,
                 })
             }
         }
@@ -147,7 +120,6 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
                         className={cn(loginClassname.transition, loginClassname.opacity, loginClassname.translate)}
                         setData={handleSetDataForm}
                         isLoading={isLoading}
-                        isSuccess={loginIsSuccess}
                     />
 
                     <SignupForm
@@ -155,7 +127,6 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
                         className={cn(signupClassname.transition, signupClassname.opacity, signupClassname.translate)}
                         setData={handleSetDataForm}
                         isLoading={isLoading}
-                        isSuccess={registerIsSuccess}
                     />
 
                     <img

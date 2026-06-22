@@ -20,22 +20,30 @@ createRoot(document.getElementById('root')!).render(
 
             <Routes>
                 <Route path={'/'} element={<MainLayout/>}>
+
                     <Route
                         index
                         element={ROUTES_CONFIG.ROUTES.HOME.element}
                     />
+
+                    <Route
+                        path={ROUTES_CONFIG.ROUTES.PROFILE.url}
+                        element={ROUTES_CONFIG.ROUTES.PROFILE.element}
+                    />
+
                 </Route>
 
                 <Route
                     path={ROUTES_CONFIG.ROUTES.AUTH.url}
                     element={<CleanLayout/>}
                 >
+
                     <Route
                         index
                         element={ROUTES_CONFIG.ROUTES.AUTH.element}
                     />
-                </Route>
 
+                </Route>
 
             </Routes>
 
