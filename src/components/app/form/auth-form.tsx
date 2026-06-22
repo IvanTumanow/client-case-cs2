@@ -11,9 +11,16 @@ import axios from "axios";
 import {toast} from "sonner";
 import {ERROR_CONFIG} from "@/config/error.config.ts";
 import type {INotification} from "@/shared/types/error.types.ts";
+import {ROUTES_CONFIG} from "@/config/routes.config.tsx";
+import {useNavigate} from "react-router";
 
 export default function AuthForm({className, ...props}: ComponentProps<"div">) {
+    const navigate = useNavigate();
+
     const [isLogin, setIsLogin] = useState(true);
+
+    const [loginIsSuccess, setLoginIsSuccess] = useState<boolean>(false);
+    const [registerIsSuccess, setRegisterIsSuccess] = useState<boolean>(false);
 
     const durationMs: number = 1000
 
@@ -97,11 +104,19 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
                 }
             }
 
-            if (data.type === 'register') setIsLogin(true);
-
             toast.success(message[data.type].title, {
                 description: message[data.type].message,
             })
+
+            if (data.type === 'register') {
+                setIsLogin(true)
+                setRegisterIsSuccess(true);
+                setTimeout(() => setRegisterIsSuccess(false), 1000);
+            }
+            else {
+                setLoginIsSuccess(true)
+                navigate(ROUTES_CONFIG.ROUTES.HOME.url);
+            }
         }
         catch (err: unknown) {
             if (axios.isCancel(err)) return
@@ -132,6 +147,7 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
                         className={cn(loginClassname.transition, loginClassname.opacity, loginClassname.translate)}
                         setData={handleSetDataForm}
                         isLoading={isLoading}
+                        isSuccess={loginIsSuccess}
                     />
 
                     <SignupForm
@@ -139,6 +155,7 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
                         className={cn(signupClassname.transition, signupClassname.opacity, signupClassname.translate)}
                         setData={handleSetDataForm}
                         isLoading={isLoading}
+                        isSuccess={registerIsSuccess}
                     />
 
                     <img

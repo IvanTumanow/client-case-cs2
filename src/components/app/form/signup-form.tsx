@@ -8,7 +8,7 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import {Input} from "@/components/ui/input"
-import type {ComponentProps} from "react";
+import {type ComponentProps, useEffect} from "react";
 import {type IAuth, type ISignup, signupSchema} from "@/shared/zod-schemas/auth.schemas.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -18,16 +18,23 @@ interface Props extends ComponentProps<"div"> {
     onLogin?: () => void
     setData: (data: IAuth) => void
     isLoading: boolean
+    isSuccess: boolean
 }
 
-export function SignupForm({className, onLogin, setData, isLoading, ...props}: Props) {
-    const {register, handleSubmit, formState} = useForm<ISignup>({
+export function SignupForm({className, onLogin, setData, isLoading, isSuccess, ...props}: Props) {
+    const {register, handleSubmit, formState, reset} = useForm<ISignup>({
         resolver: zodResolver(signupSchema)
     })
 
     const onHandleSubmit = (data: ISignup) => {
         setData({data, type: "register"})
     };
+
+    useEffect(() => {
+        if (isSuccess) {
+            reset();
+        }
+    }, [isSuccess, reset]);
 
     return (
         <div className={cn("gap-6 w-sm", className)} {...props}>
