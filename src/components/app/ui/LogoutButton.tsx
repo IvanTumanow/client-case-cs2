@@ -5,6 +5,17 @@ import axios from "axios";
 import {Button} from "@/components/ui/button.tsx";
 import {useLogout} from "@/hooks/useAuth.hooks.tsx";
 import {useNavigate} from "react-router";
+import {LogOut} from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 
 
 export default function LogoutButton() {
@@ -25,16 +36,34 @@ export default function LogoutButton() {
         catch (err) {
             if (axios.isAxiosError(err) && err?.response?.data?.error?.details)
                 console.log(err.response.data.error.details)
+
+
+            console.log(err)
         }
     }
 
     return (
-        <Button
-            type={'button'}
-            variant={'destructive'}
-            onClick={handleClick}
-        >
-            Logout
-        </Button>
+        <>
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button
+                        type={'button'}
+                        variant={'destructive'}
+                        className={'flex-row items-center justify-center gap-2 px-5'}
+                    >
+                        Выйти <i className={'flex justify-center items-center'}> <LogOut/> </i>
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent size={'sm'}>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Вы действительно хотите выйти?</AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Отмена</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleClick}>Продолжить</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
     )
 }

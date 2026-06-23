@@ -9,3 +9,15 @@ h1 {
 h2 {
     @apply text-2xl
 }
+
+svg{
+    @apply h-[1.2rem] w-[1.2rem];
+}
+
+button svg, a svg {
+    @apply h-[1rem] w-[1rem];
+}
+
+a:not(:has(svg)){
+    @apply text-sm inline-block hover:scale-103 transition-transform after:content-[""] after:block after:h-[1px] after:w-0 after:bg-[var(--color-foreground)] hover:after:w-full after:transition-[width];
+}

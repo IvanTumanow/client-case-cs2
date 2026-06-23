@@ -5,6 +5,7 @@ import {api} from "@/lib/axios/axios.ts";
 import {SERVER_CONFIG} from "@/config/server.config.ts";
 import type {Route} from "@/shared/types/route.types.ts";
 import {useEffect, useState} from "react";
+import {Card, CardContent} from "@/components/ui/card.tsx";
 
 export default function Header() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -37,7 +38,7 @@ export default function Header() {
     const routes = getRoutes();
 
     return (
-        <header>
+        <header className={'sticky top-0'}>
             <nav>
                 <ul>
                     {
@@ -45,14 +46,11 @@ export default function Header() {
                         <>
                             {routes.map((item, index) => (
                                 <li key={`header-element-${index}_${item.title}`}>
-                                    <Link to={item.url}>
-                                        {item.title}
+                                    <Link to={item.url} title={item.title}>
+                                        {item?.titleElement ? item.titleElement : item.title}
                                     </Link>
                                 </li>
                             ))}
-                            <li>
-                                <ThemeSwitcher/>
-                            </li>
                         </>
                     }
 
@@ -62,6 +60,12 @@ export default function Header() {
                     }
                 </ul>
             </nav>
+
+            <Card className={'fixed right-0 top-30 w-fit p-1 flex flex-col justify-center items-center rounded-l-full'}>
+                <CardContent className={'p-1'}>
+                    <ThemeSwitcher></ThemeSwitcher>
+                </CardContent>
+            </Card>
         </header>
     );
 }
