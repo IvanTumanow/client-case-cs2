@@ -13,6 +13,8 @@ import {ROUTES_CONFIG} from "@/config/routes.config.tsx";
 import {useNavigate} from "react-router";
 import useAuth from "@/hooks/useAuth.hooks.tsx";
 
+import authTemplate from '@/../public/auth_template.png'
+
 export default function AuthForm({className, ...props}: ComponentProps<"div">) {
     const navigate = useNavigate();
 
@@ -130,8 +132,8 @@ export default function AuthForm({className, ...props}: ComponentProps<"div">) {
                     />
 
                     <img
-                        src="https://i.pinimg.com/originals/a8/1c/37/a81c37182ab0545687f6ae233d4a262d.png"
-                        alt="Image"
+                        src={authTemplate}
+                        alt={'cs2-image'}
                         className={
                             cn("absolute top-0 inset-0 h-full w-1/2 rounded-xl object-cover shadow-lg hidden sm:block",
                                 imageClassname.position, imageClassname.transition)}

@@ -26,31 +26,31 @@ export default function Header() {
         checkUser();
     }, []);
 
-    const getRoutes = (): Route[] => {
-        const baseRoutes = [...ROUTES_CONFIG.HEADER];
-
-        if (isAuthenticated) baseRoutes.push(ROUTES_CONFIG.ROUTES.PROFILE);
-        else baseRoutes.push(ROUTES_CONFIG.ROUTES.AUTH);
-
-        return baseRoutes;
-    };
-
-    const routes = getRoutes();
+    const routes: Route[] =
+        [
+            ROUTES_CONFIG.ROUTES.HOME,
+            isAuthenticated ? ROUTES_CONFIG.ROUTES.PROFILE : ROUTES_CONFIG.ROUTES.AUTH
+        ];
 
     return (
-        <header className={'sticky top-0'}>
-            <nav>
-                <ul>
+        <header className={'sticky top-0 w-full py-2'}>
+            <nav className={'w-full flex flex-row items-center justify-center'}>
+                <ul className={'w-fit flex flex-row justify-center items-center gap-5 bg-background border py-2.5 px-20 rounded-2xl'}>
                     {
                         !loading &&
                         <>
-                            {routes.map((item, index) => (
-                                <li key={`header-element-${index}_${item.title}`}>
-                                    <Link to={item.url} title={item.title}>
-                                        {item?.titleElement ? item.titleElement : item.title}
-                                    </Link>
-                                </li>
-                            ))}
+                            {
+                                routes.map((item, index) => (
+                                    <li
+                                        key={`header-element-${index}_${item.title}`}
+                                        className={'inline-flex'}
+                                    >
+                                        <Link to={item.url} title={item.title}>
+                                            {item?.titleElement ? item.titleElement : item.title}
+                                        </Link>
+                                    </li>
+                                ))
+                            }
                         </>
                     }
 
@@ -60,6 +60,8 @@ export default function Header() {
                     }
                 </ul>
             </nav>
+
+
 
             <Card className={'fixed right-0 top-30 w-fit p-1 flex flex-col justify-center items-center rounded-l-full'}>
                 <CardContent className={'p-1'}>

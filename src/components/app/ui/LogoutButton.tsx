@@ -16,9 +16,10 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
+import type {ComponentProps} from "react";
+import {cn} from "@/lib/utils.ts";
 
-
-export default function LogoutButton() {
+export default function LogoutButton({className, ...props}: ComponentProps<typeof Button>) {
     const {logout} = useLogout()
     const navigate = useNavigate()
 
@@ -49,7 +50,8 @@ export default function LogoutButton() {
                     <Button
                         type={'button'}
                         variant={'destructive'}
-                        className={'flex-row items-center justify-center gap-2 px-5'}
+                        className={cn('flex-row items-center justify-center gap-2 px-5', className)}
+                        {...props}
                     >
                         Выйти <i className={'flex justify-center items-center'}> <LogOut/> </i>
                     </Button>
