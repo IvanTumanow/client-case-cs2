@@ -11,7 +11,6 @@ export default function Home() {
             const res = await api.get(`${SERVER_CONFIG.SERVER.VITE_SERVER_URL}/user/me`)
 
             setUserData(res.data)
-            console.log(res)
         }
 
         fetchUserData()

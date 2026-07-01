@@ -7,6 +7,10 @@ import {useEffect, useState} from "react";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import Spinner from "@/components/app/ui/Spinner.tsx";
 import {NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger} from "@/components/ui/navigation-menu";
+import Balance from "@/components/app/ui/Balance.tsx";
+import useBalance from "@/hooks/useBalance.hooks.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {toast} from "sonner";
 
 export default function Header() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -33,6 +37,20 @@ export default function Header() {
         ];
 
     if (!isAuthenticated) routes.push(ROUTES_CONFIG.ROUTES.AUTH);
+
+    const {getDailyPayout, isLoading: balanceIsLoading, isError: balanceIsError} = useBalance();
+
+    const handlerGetBalanceDailyPayout = async () => {
+        const dailyPayout = await getDailyPayout();
+
+        if (balanceIsError || dailyPayout.totalPaid === null) {
+            return;
+        }
+
+        toast.success('Успешно', {
+            description: `Баланс был успешно пополнен на ${dailyPayout.totalPaid}`,
+        })
+    }
 
     return (
         <header className={'flex flex-row justify-center items-center sticky top-0 w-full py-2'}>
@@ -70,10 +88,27 @@ export default function Header() {
                                             </NavigationMenuLink>
 
                                             <NavigationMenuLink className={'w-full cursor-pointer'} asChild href={'/'}>
-                                                <div className="flex flex-col text-sm justify-start items-start">
-                                                    <p className="leading-0 font-medium">Баланс</p>
-                                                    <p className="line-clamp-2 text-muted-foreground">Пополнить баланс</p>
-                                                </div>
+                                                <Button
+                                                    className="flex flex-col text-sm justify-start items-start h-fit"
+                                                    disabled={balanceIsLoading}
+                                                    onClick={handlerGetBalanceDailyPayout}
+                                                    variant={'ghost'}
+                                                >
+                                                    {
+                                                        balanceIsLoading &&
+                                                        <Spinner/>
+                                                    }
+
+                                                    {
+                                                        !balanceIsLoading &&
+                                                        <>
+                                                            <p className="font-medium">Баланс</p>
+                                                            <p className="text-muted-foreground">
+                                                                Пополнить баланс
+                                                            </p>
+                                                        </>
+                                                    }
+                                                </Button>
                                             </NavigationMenuLink>
                                         </NavigationMenuContent>
                                     </NavigationMenuItem>
@@ -81,6 +116,8 @@ export default function Header() {
                             }
                         </>
                     }
+
+                    <Balance/>
 
                     {
                         loading &&
