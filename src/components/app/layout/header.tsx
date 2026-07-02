@@ -6,9 +6,19 @@ import type {Route} from "@/shared/types/route.types.ts";
 import {useEffect, useState} from "react";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import Spinner from "@/components/app/ui/Spinner.tsx";
-import {NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger} from "@/components/ui/navigation-menu";
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger
+} from "@/components/ui/navigation-menu";
 import Balance from "@/components/app/ui/Balance.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {useDailyPayout} from "@/hooks/useBalance.hooks.tsx";
+import {toast} from "sonner";
+import BalanceCoin from "@/components/app/ui/BalanceCoin.tsx";
 
 export default function Header() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -36,10 +46,27 @@ export default function Header() {
 
     if (!isAuthenticated) routes.push(ROUTES_CONFIG.ROUTES.AUTH);
 
+    const {isLoading: dailyPayoutIsLoading, getBalanceDailyUp, error: dailyPayoutError} = useDailyPayout()
+    const handlerBalanceUp = async () => {
+        const dailyPayoutData = await getBalanceDailyUp()
+
+        if (dailyPayoutError && typeof dailyPayoutError === 'string') toast.error('Ошибка', {description: dailyPayoutError})
+
+        else toast.success('Награда получена',
+            {
+                description: (
+                    <div className={'flex flex-row gap-1 items-center justify-center'}>
+                        {`На ваш счет успешно начислено ${dailyPayoutData?.totalPaid}`} <BalanceCoin/>
+                    </div>
+                )
+            })
+    }
+
     return (
         <header className={'flex flex-row justify-center items-center sticky top-0 w-full py-2'}>
             <NavigationMenu>
-                <NavigationMenuList  className={'w-fit flex flex-row justify-center items-center gap-5 bg-background border px-20 rounded-2xl'}>
+                <NavigationMenuList
+                    className={'w-fit flex flex-row justify-center items-center gap-5 bg-background border px-20 rounded-2xl'}>
                     {
                         !loading &&
                         <>
@@ -74,26 +101,24 @@ export default function Header() {
                                             <NavigationMenuLink className={'w-full cursor-pointer'} asChild href={'/'}>
                                                 <Button
                                                     className="flex flex-col text-sm justify-start items-start h-fit"
-                                                    // disabled={balanceIsLoading}
-                                                    // onClick={handlerGetBalanceDailyPayout}
+                                                    disabled={dailyPayoutIsLoading}
+                                                    onClick={handlerBalanceUp}
                                                     variant={'ghost'}
                                                 >
-                                                    {/*{*/}
-                                                    {/*    balanceIsLoading &&*/}
-                                                    {/*    <Spinner/>*/}
-                                                    {/*}*/}
+                                                    {
+                                                        dailyPayoutIsLoading &&
+                                                        <Spinner/>
+                                                    }
 
-                                                    {/*{*/}
-                                                    {/*    !balanceIsLoading &&*/}
-                                                    {/*    <>*/}
-                                                    {/*        <p className="font-medium">Баланс</p>*/}
-                                                    {/*        <p className="text-muted-foreground">*/}
-                                                    {/*            Пополнить баланс*/}
-                                                    {/*        </p>*/}
-                                                    {/*    </>*/}
-                                                    {/*}*/}
-
-                                                    Пополнить баланс
+                                                    {
+                                                        !dailyPayoutIsLoading &&
+                                                        <>
+                                                            <p className="font-medium">Баланс</p>
+                                                            <p className="text-muted-foreground">
+                                                                Пополнить баланс
+                                                            </p>
+                                                        </>
+                                                    }
                                                 </Button>
                                             </NavigationMenuLink>
                                         </NavigationMenuContent>

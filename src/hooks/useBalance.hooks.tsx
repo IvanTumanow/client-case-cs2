@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { SERVER_CONFIG } from "@/config/server.config.ts";
-import {type IUser, userSchema} from "@/shared/zod-schemas/user.schemas.ts";
+import {type ITotalPaid, type IUser, totalPaidSchema, userSchema} from "@/shared/zod-schemas/user.schemas.ts";
 import { toast } from "sonner";
+import {api} from "@/lib/axios/axios.ts";
+import axios from "axios";
 
-export default function useBalance() {
+export function useBalanceSSE() {
     const [balance, setBalance] = useState<IUser['balance'] | null>(null);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -52,4 +54,42 @@ export default function useBalance() {
     }, []);
 
     return { balance, isLoading, error };
+}
+
+export function useDailyPayout() {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<unknown | null>(null);
+
+
+    const fetchBalanceDailyUp = async (): Promise<ITotalPaid> => {
+        try {
+            setIsLoading(true);
+
+            const res = await api.post(`${SERVER_CONFIG.SERVER.VITE_SERVER_URL}/user/me/balance-up`)
+
+            const validation = totalPaidSchema.safeParse(res.data?.data?.balance);
+
+            console.log('validation', validation);
+
+            if (!validation.success)  setError(validation.error)
+            else return validation.data;
+        }
+
+        catch (e){
+            if (axios.isAxiosError(e) && e?.response?.data?.error?.details) setError(e.response.data.error.details)
+
+            console.error('daily payout hooks error', e)
+        }
+
+        finally {
+            setIsLoading(false);
+        }
+    }
+
+
+    const getBalanceDailyUp = () => {
+        return fetchBalanceDailyUp()
+    }
+
+    return {isLoading, error, getBalanceDailyUp}
 }

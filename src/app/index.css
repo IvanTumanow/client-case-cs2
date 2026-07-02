@@ -3,6 +3,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
+@import "tw-shimmer";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -126,6 +127,10 @@
     --success: oklch(0.705 0.213 166.968);
     --warning: oklch(0.769 0.188 70.08);
 }
+
+
+
+
 
 @layer base {
   * {
