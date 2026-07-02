@@ -9,7 +9,7 @@ interface Props{
 
 export const useLogout = () => {
     const logout = async () => {
-        const res = await api.post(`${SERVER_CONFIG.SERVER.VITE_SERVER_URL}/user/logout`)
+        const res = await api.post(`${SERVER_CONFIG.SERVER.VITE_SERVER_URL}/user/me/logout`)
 
         if (res.status >= 400) throw new Error(res.data)
 

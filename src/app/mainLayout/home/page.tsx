@@ -14,6 +14,7 @@ export default function Home() {
         }
 
         fetchUserData()
+
     }, [])
 
     return (
@@ -22,46 +23,10 @@ export default function Home() {
 
             <h2>{Object.keys(userData).length !== 0 ? 'Вы авторизованы' : 'Вы не авторизованы'}</h2>
 
+            <h3>user</h3>
             <pre>
                 {JSON.stringify(userData, null, 2)}
             </pre>
-
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
-            <p>Lorem20</p>
         </div>
     )
 }
