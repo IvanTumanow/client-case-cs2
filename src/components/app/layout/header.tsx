@@ -46,20 +46,22 @@ export default function Header() {
 
     if (!isAuthenticated) routes.push(ROUTES_CONFIG.ROUTES.AUTH);
 
-    const {isLoading: dailyPayoutIsLoading, getBalanceDailyUp, error: dailyPayoutError} = useDailyPayout()
+    const {isLoading: dailyPayoutIsLoading, getBalanceDailyUp} = useDailyPayout()
     const handlerBalanceUp = async () => {
-        const dailyPayoutData = await getBalanceDailyUp()
+        const dailyPayout = await getBalanceDailyUp()
 
-        if (dailyPayoutError && typeof dailyPayoutError === 'string') toast.error('Ошибка', {description: dailyPayoutError})
+        if (dailyPayout?.error && typeof dailyPayout.error === 'string') toast.error('Ошибка', {description: dailyPayout.error})
 
-        else toast.success('Награда получена',
-            {
-                description: (
-                    <div className={'flex flex-row gap-1 items-center justify-center'}>
-                        {`На ваш счет успешно начислено ${dailyPayoutData?.totalPaid}`} <BalanceCoin/>
-                    </div>
-                )
-            })
+        if (dailyPayout.success && dailyPayout?.data?.totalPaid){
+            toast.success('Награда получена',
+                {
+                    description: (
+                        <div className={'flex flex-row gap-1 items-center justify-center'}>
+                            {`На ваш счет успешно начислено ${dailyPayout.data.totalPaid}`} <BalanceCoin/>
+                        </div>
+                    )
+                })
+        }
     }
 
     return (

@@ -56,12 +56,16 @@ export function useBalanceSSE() {
     return { balance, isLoading, error };
 }
 
+interface IDailyPayout {
+    success: boolean;
+    data?: ITotalPaid
+    error?: string
+}
+
 export function useDailyPayout() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<unknown | null>(null);
 
-
-    const fetchBalanceDailyUp = async (): Promise<ITotalPaid> => {
+    const fetchBalanceDailyUp = async (): Promise<IDailyPayout> => {
         try {
             setIsLoading(true);
 
@@ -69,16 +73,16 @@ export function useDailyPayout() {
 
             const validation = totalPaidSchema.safeParse(res.data?.data?.balance);
 
-            console.log('validation', validation);
-
-            if (!validation.success)  setError(validation.error)
-            else return validation.data;
+            if (!validation.success) throw new Error(validation.error.message);
+            else return {success: true, data: validation.data};
         }
 
         catch (e){
-            if (axios.isAxiosError(e) && e?.response?.data?.error?.details) setError(e.response.data.error.details)
+            if (axios.isAxiosError(e) && e?.response?.data?.error?.details) {
+                return {success: false, error: e?.response?.data?.error?.details.toString()}
+            }
 
-            console.error('daily payout hooks error', e)
+            return {success: false, error: e.toString()};
         }
 
         finally {
@@ -91,5 +95,5 @@ export function useDailyPayout() {
         return fetchBalanceDailyUp()
     }
 
-    return {isLoading, error, getBalanceDailyUp}
+    return {isLoading, getBalanceDailyUp}
 }
