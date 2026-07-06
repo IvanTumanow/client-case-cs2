@@ -130,7 +130,10 @@ export default function Header() {
                         </>
                     }
 
-                    <Balance/>
+                    {
+                        isAuthenticated &&
+                        <Balance/>
+                    }
 
                     {
                         loading &&

@@ -19,7 +19,7 @@ export default function Balance() {
     return (
         <div className={'flex flex-row items-center justify-center gap-1'}>
             <span className={'font-semibold shimmer shimmer-color-yellow-400 shimmer-spread-60 shimmer-duration-2000font-bold text-(--color-warning)'}>
-                {balance.toLocaleString('ru-RU')}
+                {balance?.toLocaleString('ru-RU')}
             </span>
 
             <BalanceCoin/>
